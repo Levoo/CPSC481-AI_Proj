@@ -4,18 +4,20 @@ from pygame.locals import *
 pygame.init()
 
 
-window = pygame.display.set_mode((1000, 500))
+window = pygame.display.set_mode((1000, 500))  # set window size
+
 
 class Player:
     px = 0
     py = 0
     speed = 1
-    pwid = 20
+    p_width = 20
+
 
 main = Player
 clock = pygame.time.Clock()
 while True:
-    clock.tick(120)
+    clock.tick(120)  # FPS
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -35,9 +37,9 @@ while True:
     if main.px == 123 and main.py < 300:
         main.px = 124
 
-
-    window.fill((180, 210, 240))
+    window.fill((180, 210, 240))  # draw the background
+    # Draw black line       (r,g,b), starting (x,y), ending (x,y), width
     pygame.draw.line(window, (20, 20, 20), (120, 0), (120, 300), 5)
-    pygame.draw.rect(window, (240, 230, 140), (main.px, main.py, main.pwid, main.pwid))
+    pygame.draw.rect(window, (240, 230, 140), (main.px, main.py, main.p_width, main.p_width))  # Draw player every frame
 
     pygame.display.update()
