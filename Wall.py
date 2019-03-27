@@ -10,4 +10,4 @@ class Wall(Sprite):
         self.rect = pygame.Rect(40, 40, 20, 20)
 
     def draw(self):
-        pygame.draw.rect(window, (240, 140, 230), self.rect)
+        pygame.draw.rect(self.window, (240, 140, 230), self.rect)
