@@ -7,8 +7,8 @@ class Unit(Sprite):
         super(Unit, self).__init__()
         self.window = window
         self.speed = 1
-        self.p_width = 20
-        self.rect = pygame.Rect(0, 0, self.p_width, self.p_width)
+        self.p_width = 10
+        self.rect = pygame.Rect(50, 50, self.p_width, self.p_width)
         self.left_hitbox = pygame.Rect(self.rect.x - 1, self.rect.y, 1, self.p_width)
         self.right_hitbox = pygame.Rect(self.rect.right, self.rect.y, 1, self.p_width)
         self.up_hitbox = pygame.Rect(self.rect.y - 1, self.rect.x, self.p_width, 1)

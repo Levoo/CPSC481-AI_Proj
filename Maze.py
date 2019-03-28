@@ -7,9 +7,10 @@ from Unit import Unit
 import Functions as f
 
 pygame.init()
+windowWidth = 1305 # og 305
+windowHeight = 800 # og 720
 
-
-window = pygame.display.set_mode((1000, 500))  # set window size
+window = pygame.display.set_mode((windowWidth, windowHeight))  # set window size
 
 
 clock = pygame.time.Clock()
@@ -38,10 +39,22 @@ while True:
 
     window.fill((180, 210, 240))  # draw the background
     # Draw black line       (r,g,b), starting (x,y), ending (x,y), width
-    pygame.draw.line(window, (20, 20, 20), (120, 0), (120, 300), 5)
+    #pygame.draw.line(window, (20, 20, 20), (120, 0), (120, 300), 5)
 
     main.draw()
     wall.draw()
-    start_button.draw()
+
+    # vertical lines
+    for x in range(0, 1305, 50):
+        wall.draw(pygame.Rect(x, 0, 5, 705))
+        #print("placing line on x: " + str(x))
+    # horizontal lines
+    for y in range(0, 720, 50):
+        wall.draw(pygame.Rect(0, y, 1305, 5))
+        #print("placing line on x: " + str(x))
+
+    #draw outline of maze
+    #wall.create_maze_outline(windowWidth, windowHeight)
+    #start_button.draw()
 
     pygame.display.update()

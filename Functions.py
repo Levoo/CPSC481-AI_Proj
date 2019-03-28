@@ -1,7 +1,6 @@
 import pygame
 import sys
 
-
 def check_keydown_events(event, main):
     if event.key == pygame.K_LEFT:
         main.px -= main.speed
@@ -36,3 +35,4 @@ def check_events(play_button, main):
 def check_play_button(play_button, mouse_x, mouse_y):
     if play_button.rect.collidepoint(mouse_x, mouse_y):
         play_button.pressed = True
+    
