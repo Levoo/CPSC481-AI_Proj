@@ -3,11 +3,13 @@ from pygame.sprite import Sprite
 
 
 class Wall(Sprite):
-    def __init__(self, window):
+    def __init__(self, window, x, y, width, height, color):
         super(Wall, self).__init__()
         self.window = window
-        self.p_width = 10
-        self.rect = pygame.Rect(40, 40, 20, 20)
+        self.p_width = width
+        self.p_height = height
+        self.rect = pygame.Rect(x, y, width, height)
+        self.color = color
 
     def draw(self):
-        pygame.draw.rect(self.window, (240, 140, 230), self.rect)
+        pygame.draw.rect(self.window, self.color, self.rect)

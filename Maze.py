@@ -16,7 +16,7 @@ clock = pygame.time.Clock()
 start_button = Button(window, "START", 500, 250)
 
 main = Unit(window)
-wall = Wall(window)
+wall = Wall(window, 40, 40, 80, 80, (0, 0, 0))
 maze = Group()
 maze.add(wall)
 
@@ -24,19 +24,9 @@ while True:
     clock.tick(120)  # FPS
     f.check_events(start_button, main)
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        main.rect.x -= main.speed
-    if keys[pygame.K_RIGHT]:
-        main.rect.x += main.speed
-    if keys[K_UP]:
-        main.rect.y -= main.speed
-    if keys[K_DOWN]:
-        main.rect.y += main.speed
-
     main.check_collision(maze)
 
-    window.fill((180, 210, 240))  # draw the background
+    window.fill((51, 51, 51))  # draw the background
     # Draw black line       (r,g,b), starting (x,y), ending (x,y), width
     pygame.draw.line(window, (20, 20, 20), (120, 0), (120, 300), 5)
 
