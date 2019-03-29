@@ -17,44 +17,31 @@ clock = pygame.time.Clock()
 start_button = Button(window, "START", 500, 250)
 
 main = Unit(window)
-wall = Wall(window)
+wall = Wall(window, 0, 0, 800, 20, (0, 0, 0))
+wall2 = Wall(window, 40, 20, 20, 400, (0, 0, 0))
+wall3 = Wall(window, 0, 440, 800, 20, (0, 0, 0))
+wall4 = Wall(window, 0, 40, 20, 400, (0, 0, 0))
+wall5 = Wall(window, 120, 20, 20, 400, (0, 0, 0))
+wall6 = Wall(window, 80, 40, 20, 400, (0, 0, 0))
+wall7 = Wall(window, 160, 200, 20, 240, (0, 0, 0))
+wall8 = Wall(window, 140, 20, 40, 160, (0, 0, 0))
+wall9 = Wall(window, 200, 40, 20, 380, (0, 0, 0))
+wall10 = Wall(window, 240, 240, 20, 200, (0, 0, 0))
+wall11 = Wall(window, 240, 20, 20, 200, (0, 0, 0))
 maze = Group()
-maze.add(wall)
+maze.add(wall, wall2, wall3, wall4, wall5, wall6, wall7, wall8, wall9, wall10, wall11)
 
 while True:
     clock.tick(120)  # FPS
     f.check_events(start_button, main)
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        main.rect.x -= main.speed
-    if keys[pygame.K_RIGHT]:
-        main.rect.x += main.speed
-    if keys[K_UP]:
-        main.rect.y -= main.speed
-    if keys[K_DOWN]:
-        main.rect.y += main.speed
+    main.ai(maze)
 
-    main.check_collision(maze)
-
-    window.fill((180, 210, 240))  # draw the background
-    # Draw black line       (r,g,b), starting (x,y), ending (x,y), width
-    #pygame.draw.line(window, (20, 20, 20), (120, 0), (120, 300), 5)
-
+    window.fill((51, 51, 51))  # draw the background
     main.draw()
-    wall.draw()
-
-    # vertical lines
-    for x in range(0, 1305, 50):
-        wall.draw(pygame.Rect(x, 0, 5, 705))
-        #print("placing line on x: " + str(x))
-    # horizontal lines
-    for y in range(0, 720, 50):
-        wall.draw(pygame.Rect(0, y, 1305, 5))
-        #print("placing line on x: " + str(x))
-
-    #draw outline of maze
-    #wall.create_maze_outline(windowWidth, windowHeight)
-    #start_button.draw()
+    for block in maze:
+        block.draw()
+    if not start_button.pressed:
+        start_button.draw()
 
     pygame.display.update()
