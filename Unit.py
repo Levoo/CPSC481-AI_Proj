@@ -8,15 +8,6 @@ class Unit(Sprite):
         super(Unit, self).__init__()
         self.window = window
         self.speed = 1
-<<<<<<< HEAD
-        self.p_width = 10
-        self.rect = pygame.Rect(50, 50, self.p_width, self.p_width)
-        self.left_hitbox = pygame.Rect(self.rect.x - 1, self.rect.y, 1, self.p_width)
-        self.right_hitbox = pygame.Rect(self.rect.right, self.rect.y, 1, self.p_width)
-        self.up_hitbox = pygame.Rect(self.rect.y - 1, self.rect.x, self.p_width, 1)
-        self.right_hitbox = pygame.Rect(self.rect.right - 1, self.rect.y, self.p_width, 1)
-        self.last_direction = 'r'
-=======
         self.p_width = 20
         self.rect = pygame.Rect(0, 20, self.p_width, self.p_width)
 
@@ -34,7 +25,6 @@ class Unit(Sprite):
 
         # Uses for calculating amount moved since last position and adds to weight,
         # then changes last position to current position. Weight = Fitness
->>>>>>> e96b04733c8cec87c44cad3480f5d55b1c47b69f
         self.last_position = (0, 0)
         self.weight = 0
 
