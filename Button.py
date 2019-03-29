@@ -22,6 +22,7 @@ class Button:
         self.select_color1 = (190, 190, 190)
         self.font = pygame.font.SysFont(None, 36)
 
+        self.press = False
         self.pressed = False
         self.msg = msg
         self.msg_image = self.font.render(self.msg, True, self.text_color, self.button_color)
@@ -43,7 +44,7 @@ class Button:
 
     def draw(self):
         self.screen.fill(self.border_color, self.border_rect)
-        if not self.pressed:
+        if not self.press:
             self.screen.fill(self.select_color2, self.select_rect2)
             self.screen.fill(self.select_color1, self.select_rect1)
         else:

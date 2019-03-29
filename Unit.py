@@ -1,5 +1,6 @@
 import pygame
 from pygame.sprite import Sprite
+import random
 
 
 class Unit(Sprite):
@@ -8,18 +9,19 @@ class Unit(Sprite):
         self.window = window
         self.speed = 1
         self.p_width = 20
-        self.rect = pygame.Rect(0, 0, self.p_width, self.p_width)
+        self.rect = pygame.Rect(0, 20, self.p_width, self.p_width)
 
         # Hitboxes for checking cardinal directions
-        self.left_hitbox = pygame.Rect(self.rect.x - 1, self.rect.y, 1, self.p_width)
-        self.right_hitbox = pygame.Rect(self.rect.right, self.rect.y, 1, self.p_width)
-        self.up_hitbox = pygame.Rect(self.rect.y - 1, self.rect.x, self.p_width, 1)
-        self.right_hitbox = pygame.Rect(self.rect.right - 1, self.rect.y, self.p_width, 1)
+        self.left_hitbox = LeftHitbox(self.rect.x - 1, self.rect.y, 1, self.p_width)
+        self.right_hitbox = RightHitbox(self.rect.right, self.rect.y, 1, self.p_width)
+        self.up_hitbox = UpHitbox(self.rect.x, self.rect.y - 1, self.p_width, 1)
+        self.down_hitbox = DownHitbox(self.rect.x, self.rect.bottom, self.p_width, 1)
 
-        # For choosing the next direction(l = left, r = right, u = up, d = down
+        # For choosing the next direction, direction = x, y vector
         # Stores last_direction in moves, directions = genes, moves = chromosome
-        self.last_direction = 'r'
+        self.last_direction = (1 * self.speed, 0)
         self.moves = []
+        self.move_count = 0
 
         # Uses for calculating amount moved since last position and adds to weight,
         # then changes last position to current position. Weight = Fitness
@@ -46,3 +48,58 @@ class Unit(Sprite):
         # Updates the last_position as current position
         self.weight = abs(self.rect.x - self.last_position[0]) + abs(self.rect.y - self.last_position[1])
         self.last_position = (self.rect.x, self.rect.y)
+        return col
+
+    def ai(self, maze):
+        self.rect = self.rect.move(self.last_direction[0], self.last_direction[1])
+        collision = self.check_collision(maze)
+
+        # Next move if wall is hit
+        if collision and self.move_count + 1 < len(self.moves):
+            self.last_direction = self.moves[self.move_count]
+            self.move_count += 1
+        elif collision:
+            self.left_hitbox.rect.x, self.left_hitbox.rect.y = self.rect.x - 1, self.rect.y
+            self.right_hitbox.rect.x, self.right_hitbox.rect.y = self.rect.right, self.rect.y
+            self.up_hitbox.rect.x, self.up_hitbox.rect.y = self.rect.x, self.rect.y - 1
+            self.down_hitbox.rect.x, self.down_hitbox.rect.y = self.rect.x, self.rect.bottom
+            if self.last_direction[0]:
+                choices = []
+                if not pygame.sprite.spritecollideany(self.up_hitbox, maze):
+                    choices.append(-1)
+                if not pygame.sprite.spritecollideany(self.down_hitbox, maze):
+                    choices.append(1)
+                self.last_direction = (0, random.choice(choices) * self.speed)
+            elif self.last_direction[1]:
+                choices = []
+                if not pygame.sprite.spritecollideany(self.left_hitbox, maze):
+                    choices.append(-1)
+                if not pygame.sprite.spritecollideany(self.right_hitbox, maze):
+                    choices.append(1)
+                self.last_direction = (random.choice(choices) * self.speed, 0)
+            self.moves.append(self.last_direction)
+            self.move_count += 1
+
+
+class LeftHitbox(Sprite):
+    def __init__(self, x, y, width, height):
+        super(LeftHitbox, self).__init__()
+        self.rect = pygame.Rect(x, y, width, height)
+
+
+class RightHitbox(Sprite):
+    def __init__(self, x, y, width, height):
+        super(RightHitbox, self).__init__()
+        self.rect = pygame.Rect(x, y, width, height)
+
+
+class UpHitbox(Sprite):
+    def __init__(self, x, y, width, height):
+        super(UpHitbox, self).__init__()
+        self.rect = pygame.Rect(x, y, width, height)
+
+
+class DownHitbox(Sprite):
+    def __init__(self, x, y, width, height):
+        super(DownHitbox, self).__init__()
+        self.rect = pygame.Rect(x, y, width, height)
