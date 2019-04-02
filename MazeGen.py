@@ -74,42 +74,44 @@ class mazeGen:
     def depth_first_search_maze_gen(self):
         dfsQ = queue.Queue(maxsize=self.size*self.size)
 
+        i = 0
+        j = 0
+        self.grid[0][0].set_node_coord(0, 0)  # starting cell is at (0, 0)
+        self.grid[0][0].set_visited_status(True)
+        dfsQ.put(self.grid[0][0])               # put first cell in queue
         while self.visitedCount != (self.size * self.size):
-            self.grid[0][0].set_node_coord(0, 0)    # starting cell is at (0, 0)
-            dfsQ.put(self.grid[0][0])               # put current cell on queue
-
-            nextCell = self.get_rand_node(self.grid[0][0])  # check adjacent cells if visited and get next rand cell
+            currentCell = self.grid[i][j]
+            #  TODO: make a function that returns bool if all adjacent nodes are visited
+            #  if bool = true, then pop queue with: dfsQ.get(self.grid[i][j] and exit current loop
+            #  else:
+            nextCell = self.get_rand_node(currentCell)  # get next rand cell, given current cell
             dfsQ.put(nextCell)
+            i = nextCell.x
+            j = nextCell.y
 
-        '''
-        x, y = self.get_rand_node() #get random cell in self.grid
-        self.grid[x][y].set_node_coord(x, y) # have the grid x,y be stored by the obj thats in that position
-        print ("X: " + str(x) + "| Y: " + str(y))  # rest is code to make sure it works 
-        self.grid[x][y].print_node()
-        self.grid[x][y].set_visited_status(True)
-        self.grid[x][y].print_node()
-        '''
+    #  TODO: Find a way to remove visited cells from random pool
+    #  Ex. If bottom is visited, find a way so that 1 (bottom) cant be randomly selected
+    #  TODO: Check for out of bounds ex, if at top level, top should not be chosen
 
-    #  TODO: Check if adjacent cells have been visited
-
-    def get_rand_node(self, tempCell):
+    def get_rand_node(self, cell):
 
         direction = random.randint(0, 3)
         if direction == 0:  # top
-            nextX = tempCell.x + 0
-            nextY = tempCell.y + 1
+            nextX = cell.x + 0
+            nextY = cell.y + 1
         if direction == 1:  # bottom
-            nextX = tempCell.x + 0
-            nextY = tempCell.y - 1
+            nextX = cell.x + 0
+            nextY = cell.y - 1
         if direction == 2:  # right
-            nextX = tempCell.x + 1
-            nextY = tempCell.y + 0
+            nextX = cell.x + 1
+            nextY = cell.y + 0
         if direction == 3:  # left
-            nextX = tempCell.x - 1
-            nextY = tempCell.y + 0
+            nextX = cell.x - 1
+            nextY = cell.y + 0
 
-
+        self.visitedCount+1
         nextCell = singleCell()
+        nextCell.set_visited_status(True)
         nextCell.set_node_coord(nextX, nextY)
         return nextCell
 
