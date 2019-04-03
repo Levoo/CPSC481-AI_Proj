@@ -18,15 +18,13 @@ for x in range(0, 1305, 50):
 '''
 
 
-
-
-
-#enum for sides, used for self.walls 
+#  enum for sides, used for self.walls
 class sides(enum.Enum):
     top = 0
     bottom = 1
     right = 2
     left = 3
+
 
 class singleCell:
     def __init__(self):
@@ -34,15 +32,16 @@ class singleCell:
         self.walls = [True, True, True, True] # list of booleans, see enum class for index meaning
         self.x = None
         self.y = None
+
     # prints the node in the 2d array and if it has been visited, 
     def print_node(self):
         print("Node: (" + str(self.x) +", "  + str(self.y) + ")")
         print("Visited: " + str(self.get_visited_status()))
-        for (wallPresent, side) in zip(self.walls, sides):
-            print( str(side.name) + " side: " + str(wallPresent)) 
+        #  for (wallPresent, side) in zip(self.walls, sides):
+        #    print( str(side.name) + " side: " + str(wallPresent))
     
     def set_visited_status(self, visited): 
-        print("Changed visited status to visited")
+        #  print("Changed visited status to visited")
         self.beenVisited = visited
     
     def set_node_coord(self, x, y):
@@ -72,51 +71,69 @@ class mazeGen:
     Go to step 2.
     '''
     def depth_first_search_maze_gen(self):
-        dfsQ = queue.Queue(maxsize=self.size*self.size)
+        dfs_q = queue.Queue(maxsize=self.size*self.size)
 
         i = 0
         j = 0
-        self.grid[0][0].set_node_coord(0, 0)  # starting cell is at (0, 0)
-        self.grid[0][0].set_visited_status(True)
-        dfsQ.put(self.grid[0][0])               # put first cell in queue
-        while self.visitedCount != (self.size * self.size):
-            currentCell = self.grid[i][j]
+        start_cell = singleCell()
+        start_cell.set_node_coord(0, 0)
+        start_cell.set_visited_status(True)
+        self.grid[0][0] = start_cell
+        dfs_q.put(self.grid[0][0])               # put first cell in queue
+        while self.visitedCount != (10):
             #  TODO: make a function that returns bool if all adjacent nodes are visited
             #  if bool = true, then pop queue with: dfsQ.get(self.grid[i][j] and exit current loop
             #  else:
-            nextCell = self.get_rand_node(currentCell)  # get next rand cell, given current cell
-            dfsQ.put(nextCell)
-            i = nextCell.x
-            j = nextCell.y
+            next_cell = self.get_rand_node(self.grid[i][j])  # get next rand cell, given current cell
+            i = next_cell.x
+            j = next_cell.y
+            self.grid[i][j] = next_cell
+            dfs_q.put(next_cell)
+
+            #  next_cell.print_node()
+
+            # this should go in the get rand node function after check adj visited function is made
+            self.visitedCount += 1
+
 
     #  TODO: Find a way to remove visited cells from random pool
     #  Ex. If bottom is visited, find a way so that 1 (bottom) cant be randomly selected
-    #  TODO: Check for out of bounds ex, if at top level, top should not be chosen
 
     def get_rand_node(self, cell):
-
         direction = random.randint(0, 3)
-        if direction == 0:  # top
-            nextX = cell.x + 0
-            nextY = cell.y + 1
-        if direction == 1:  # bottom
-            nextX = cell.x + 0
-            nextY = cell.y - 1
-        if direction == 2:  # right
-            nextX = cell.x + 1
-            nextY = cell.y + 0
-        if direction == 3:  # left
-            nextX = cell.x - 1
-            nextY = cell.y + 0
+        next_x = cell.x + 0
+        next_y = cell.y + 0
+        if direction == 0 and cell.x != 0:  # top
+            next_x = cell.x - 1
+            next_y = cell.y + 0
+        if direction == 1 and cell.x != (self.size - 1):  # bottom
+            next_x = cell.x + 1
+            next_y = cell.y + 0
+        if direction == 2 and cell.y != (self.size - 1):  # right
+            next_x = cell.x + 0
+            next_y = cell.y + 1
+        if direction == 3 and cell.y != 0:  # left
+            next_x = cell.x + 0
+            next_y = cell.y - 1
+        temp_cell = singleCell()
+        temp_cell.set_visited_status(True)
+        temp_cell.set_node_coord(next_x, next_y)
+        return temp_cell
 
-        self.visitedCount+1
-        nextCell = singleCell()
-        nextCell.set_visited_status(True)
-        nextCell.set_node_coord(nextX, nextY)
-        return nextCell
+
+def print_grid(grid):
+    for row in grid:
+        for e in row:
+            if e.get_visited_status():
+                print("V", end=' ')  # Visited
+            else:
+                print("N", end=' ')  # Not Visited
+
+        print('\n')
 
 
 cells = singleCell()
 genn = mazeGen(cells)
 
 genn.depth_first_search_maze_gen()
+print_grid(genn.grid)
