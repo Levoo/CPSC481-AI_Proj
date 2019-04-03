@@ -71,35 +71,32 @@ class mazeGen:
     Go to step 2.
     '''
     def depth_first_search_maze_gen(self):
-        dfs_q = queue.Queue(maxsize=self.size*self.size)
-
+        dfs_stack = []
         i = 0
         j = 0
         start_cell = singleCell()
         start_cell.set_node_coord(0, 0)
         start_cell.set_visited_status(True)
         self.grid[0][0] = start_cell
-        dfs_q.put(self.grid[0][0])               # put first cell in queue
-        while self.visitedCount != (10):
-            #  TODO: make a function that returns bool if all adjacent nodes are visited
-            #  if bool = true, then pop queue with: dfsQ.get(self.grid[i][j] and exit current loop
-            #  else:
-            next_cell = self.get_rand_node(self.grid[i][j])  # get next rand cell, given current cell
+        dfs_stack.append(self.grid[0][0])       # put first cell in stack
+        while self.visitedCount != (25):
+            #  if bool = true, then pop queue
+            print(self.all_adjacent_visited(self.grid[i][j]))
+            if self.all_adjacent_visited(self.grid[i][j]):
+                dfs_stack.pop()
+                next_cell = dfs_stack.pop()
+            if not self.all_adjacent_visited(self.grid[i][j]):
+                next_cell = self.get_rand_node(self.grid[i][j])  # get next rand cell, given current cell
             i = next_cell.x
             j = next_cell.y
             self.grid[i][j] = next_cell
-            dfs_q.put(next_cell)
-
+            dfs_stack.append(next_cell)
             #  next_cell.print_node()
 
-            # this should go in the get rand node function after check adj visited function is made
-            self.visitedCount += 1
-
-
-    #  TODO: Find a way to remove visited cells from random pool
+    #  TODO: Do not allow visited nodes to be selected
     #  Ex. If bottom is visited, find a way so that 1 (bottom) cant be randomly selected
-
     def get_rand_node(self, cell):
+        self.visitedCount += 1
         direction = random.randint(0, 3)
         next_x = cell.x + 0
         next_y = cell.y + 0
@@ -120,6 +117,22 @@ class mazeGen:
         temp_cell.set_node_coord(next_x, next_y)
         return temp_cell
 
+    def all_adjacent_visited(self, node):
+        x = node.x
+        y = node.y
+        if x != 0:
+            if not self.grid[x - 1][y].get_visited_status():  # check top
+                return False
+        if x != self.size - 1:
+            if not self.grid[x + 1][y].get_visited_status():  # check bottom
+                return False
+        if y != 0:
+            if not self.grid[x][y - 1].get_visited_status():  # check left
+                return False
+        if y != self.size - 1:
+            if not self.grid[x][y + 1].get_visited_status():  # check right
+                return False
+        return True
 
 def print_grid(grid):
     for row in grid:
