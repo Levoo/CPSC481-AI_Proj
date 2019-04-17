@@ -53,8 +53,8 @@ class singleCell:
 
 class mazeGen:
     def __init__(self, cellObj):
-        self.size = 5
-        self.grid = [ [cellObj for x in range(self.size)] for y in range(self.size) ] # n by m matrix currently 5x5
+        self.mazeSize = 5
+        self.grid = [ [cellObj for x in range(self.mazeSize)] for y in range(self.mazeSize) ] # n by m matrix currently 5x5
         self.cell_queue = 0
         self.visitedCount = 0
 
@@ -81,12 +81,15 @@ class mazeGen:
         dfs_stack.append(self.grid[0][0])       # put first cell in stack
         while self.visitedCount != (25):
             #  if bool = true, then pop queue
-            print(self.all_adjacent_visited(self.grid[i][j]))
+            print("All adj nodes visited? " + str(self.all_adjacent_visited(self.grid[i][j])))
+            # all adjacent has been visited,
             if self.all_adjacent_visited(self.grid[i][j]):
-                dfs_stack.pop()
+                dfs_stack.pop() 
                 next_cell = dfs_stack.pop()
-            if not self.all_adjacent_visited(self.grid[i][j]):
+            # else if all adjacent cells have not been visited 
+            else:
                 next_cell = self.get_rand_node(self.grid[i][j])  # get next rand cell, given current cell
+
             i = next_cell.x
             j = next_cell.y
             self.grid[i][j] = next_cell
@@ -97,24 +100,45 @@ class mazeGen:
     #  Ex. If bottom is visited, find a way so that 1 (bottom) cant be randomly selected
     def get_rand_node(self, cell):
         self.visitedCount += 1
-        direction = random.randint(0, 3)
+        direction = None
+        sideList = [sides.top, sides.bottom, sides.left, sides.right] # list of potential position to visit
+        while len(sideList) > 0:
+            direction = random.randint(0, len(sideList) - 1)
+            hasBeenVisited = self.check_visited_status(direction, cell)
+            print ("Has " + sideList[direction].name + " been visited? " + str(hasBeenVisited))
+            if not hasBeenVisited:
+                print("Choosing:" + str(direction))
+                break
+            else:
+                print("Deleting " + sideList[direction].name)
+                del sideList[direction]
+
+
         next_x = cell.x + 0
         next_y = cell.y + 0
         if direction == 0 and cell.x != 0:  # top
             next_x = cell.x - 1
             next_y = cell.y + 0
-        if direction == 1 and cell.x != (self.size - 1):  # bottom
+            print ("TOP: (" + str(next_x) + "," + str(next_y) + ")")
+        if direction == 1 and cell.x != (self.mazeSize - 1):  # bottom
             next_x = cell.x + 1
             next_y = cell.y + 0
-        if direction == 2 and cell.y != (self.size - 1):  # right
+            print ("BOT:(" + str(next_x) + "," + str(next_y) + ")")
+        if direction == 2 and cell.y != (self.mazeSize - 1):  # right
             next_x = cell.x + 0
             next_y = cell.y + 1
+            print ("RIGHT (" + str(next_x) + "," + str(next_y) + ")")
         if direction == 3 and cell.y != 0:  # left
             next_x = cell.x + 0
             next_y = cell.y - 1
+            print ("LEFT: (" + str(next_x) + "," + str(next_y) + ")")
         temp_cell = singleCell()
         temp_cell.set_visited_status(True)
         temp_cell.set_node_coord(next_x, next_y)
+
+        print("New node to visit: ")
+        temp_cell.print_node()
+
         return temp_cell
 
     def all_adjacent_visited(self, node):
@@ -123,16 +147,57 @@ class mazeGen:
         if x != 0:
             if not self.grid[x - 1][y].get_visited_status():  # check top
                 return False
-        if x != self.size - 1:
+        if x != self.mazeSize - 1:
             if not self.grid[x + 1][y].get_visited_status():  # check bottom
                 return False
         if y != 0:
             if not self.grid[x][y - 1].get_visited_status():  # check left
                 return False
-        if y != self.size - 1:
+        if y != self.mazeSize - 1:
             if not self.grid[x][y + 1].get_visited_status():  # check right
                 return False
         return True
+
+    def check_visited_status(self, direction, node):
+        x = node.x
+        y = node.y
+
+        if direction == sides.top and self.is_within_bounds(x - 1 , y): # check top
+            if not self.grid[x - 1][y].get_visited_status():
+                return False
+            else:
+                return True
+        if direction == sides.bottom and self.is_within_bounds(x + 1 , y): # check bot
+            if not self.grid[x + 1][y].get_visited_status():
+                return False
+            else:
+                return True
+        if direction == sides.right and self.is_within_bounds(x, y - 1): # check right
+            if not self.grid[x][y - 1].get_visited_status():
+                return False
+            else:
+                return True
+        if direction == sides.left and self.is_within_bounds(x, y + 1): # check left
+            if not self.grid[x][y + 1].get_visited_status():
+                return False
+            else:
+                return True
+        
+        return False
+        
+    
+    def is_within_bounds(self, x, y):
+        xOk = False
+        yOk = False
+
+        if x >= 0 and x <= self.mazeSize - 1:
+            xOk = True
+        if y >= 0 and y <= self.mazeSize - 1:
+            yOk = True
+        outcome = xOk and yOk
+        print("is within bounds? " + str(outcome))
+        return (xOk and yOk)
+    # EOC 
 
 def print_grid(grid):
     for row in grid:
