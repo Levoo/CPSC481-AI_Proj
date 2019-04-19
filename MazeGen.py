@@ -79,14 +79,13 @@ class mazeGen:
         start_cell.set_visited_status(True)
         self.grid[0][0] = start_cell
         dfs_stack.append(self.grid[0][0])       # put first cell in stack
-        while self.visitedCount != (self.mazeSize * self.mazeSize):
-            print_grid(genn.grid)
+        while self.visitedCount != (self.mazeSize * self.mazeSize) - 1:
             #  if bool = true, then pop queue
             print("All adj nodes visited? " + str(self.all_adjacent_visited(self.grid[i][j])))
             # all adjacent has been visited,
             if self.all_adjacent_visited(self.grid[i][j]):
                 print("******Popping*******")
-                dfs_stack.pop() 
+                dfs_stack.pop()
                 next_cell = dfs_stack.pop()
             # else if all adjacent cells have not been visited 
             else:
@@ -96,6 +95,7 @@ class mazeGen:
             j = next_cell.y
             self.grid[i][j] = next_cell
             dfs_stack.append(next_cell)
+            print_grid(genn.grid)
             #  next_cell.print_node()
 
     #  TODO: Do not allow visited nodes to be selected
