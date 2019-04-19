@@ -79,11 +79,13 @@ class mazeGen:
         start_cell.set_visited_status(True)
         self.grid[0][0] = start_cell
         dfs_stack.append(self.grid[0][0])       # put first cell in stack
-        while self.visitedCount != (25):
+        while self.visitedCount != (self.mazeSize * self.mazeSize):
+            print_grid(genn.grid)
             #  if bool = true, then pop queue
             print("All adj nodes visited? " + str(self.all_adjacent_visited(self.grid[i][j])))
             # all adjacent has been visited,
             if self.all_adjacent_visited(self.grid[i][j]):
+                print("******Popping*******")
                 dfs_stack.pop() 
                 next_cell = dfs_stack.pop()
             # else if all adjacent cells have not been visited 
@@ -104,31 +106,29 @@ class mazeGen:
         sideList = [sides.top, sides.bottom, sides.left, sides.right] # list of potential position to visit
         while len(sideList) > 0:
             direction = random.randint(0, len(sideList) - 1)
-            hasBeenVisited = self.check_visited_status(direction, cell)
-            print ("Has " + sideList[direction].name + " been visited? " + str(hasBeenVisited))
-            if not hasBeenVisited:
+            cell_is_valid = self.is_valid(sideList[direction], cell)
+            print ("Is " + sideList[direction].name + " valid? " + str(cell_is_valid))
+            if cell_is_valid:
                 print("Choosing:" + str(direction))
                 break
             else:
-                print("Deleting " + sideList[direction].name)
-                del sideList[direction]
-
+                print("Not Valid, Deleting " + str(direction))
 
         next_x = cell.x + 0
         next_y = cell.y + 0
-        if direction == 0 and cell.x != 0:  # top
+        if sideList[direction] == sides.top and cell.x != 0:  # top
             next_x = cell.x - 1
             next_y = cell.y + 0
             print ("TOP: (" + str(next_x) + "," + str(next_y) + ")")
-        if direction == 1 and cell.x != (self.mazeSize - 1):  # bottom
+        if sideList[direction] == sides.bottom and cell.x != (self.mazeSize - 1):  # bottom
             next_x = cell.x + 1
             next_y = cell.y + 0
             print ("BOT:(" + str(next_x) + "," + str(next_y) + ")")
-        if direction == 2 and cell.y != (self.mazeSize - 1):  # right
+        if sideList[direction] == sides.right and cell.y != (self.mazeSize - 1):  # right
             next_x = cell.x + 0
             next_y = cell.y + 1
             print ("RIGHT (" + str(next_x) + "," + str(next_y) + ")")
-        if direction == 3 and cell.y != 0:  # left
+        if sideList[direction] == sides.left and cell.y != 0:  # left
             next_x = cell.x + 0
             next_y = cell.y - 1
             print ("LEFT: (" + str(next_x) + "," + str(next_y) + ")")
@@ -136,10 +136,40 @@ class mazeGen:
         temp_cell.set_visited_status(True)
         temp_cell.set_node_coord(next_x, next_y)
 
-        print("New node to visit: ")
-        temp_cell.print_node()
+        #print("New node to visit: ")
+        #temp_cell.print_node()
 
         return temp_cell
+
+    def is_valid(self, direction, node):
+        print("Direction in is valid func : " + str(direction))
+        node_x = node.x
+        node_y = node.y
+        #  First check out of bound
+        if node_x == 0 and direction == sides.top:
+            return False
+        if node_x == self.mazeSize - 1 and direction == sides.bottom:
+            return False
+        if node_y == 0 and direction == sides.left:
+            return False
+        if node_y == self.mazeSize - 1 and direction == sides.right:
+            return False
+
+        #  Check visited status
+        if direction == sides.top:
+            if self.grid[node_x - 1][node_y].get_visited_status():
+                return False
+        if direction == sides.bottom:
+            if self.grid[node_x + 1][node_y].get_visited_status():
+                return False
+        if direction == sides.left:
+            if self.grid[node_x][node_y - 1].get_visited_status():
+                return False
+        if direction == sides.right:
+            if self.grid[node_x][node_y + 1].get_visited_status():
+                return False
+        return True
+
 
     def all_adjacent_visited(self, node):
         x = node.x
@@ -158,45 +188,6 @@ class mazeGen:
                 return False
         return True
 
-    def check_visited_status(self, direction, node):
-        x = node.x
-        y = node.y
-
-        if direction == sides.top and self.is_within_bounds(x - 1 , y): # check top
-            if not self.grid[x - 1][y].get_visited_status():
-                return False
-            else:
-                return True
-        if direction == sides.bottom and self.is_within_bounds(x + 1 , y): # check bot
-            if not self.grid[x + 1][y].get_visited_status():
-                return False
-            else:
-                return True
-        if direction == sides.right and self.is_within_bounds(x, y - 1): # check right
-            if not self.grid[x][y - 1].get_visited_status():
-                return False
-            else:
-                return True
-        if direction == sides.left and self.is_within_bounds(x, y + 1): # check left
-            if not self.grid[x][y + 1].get_visited_status():
-                return False
-            else:
-                return True
-        
-        return False
-        
-    
-    def is_within_bounds(self, x, y):
-        xOk = False
-        yOk = False
-
-        if x >= 0 and x <= self.mazeSize - 1:
-            xOk = True
-        if y >= 0 and y <= self.mazeSize - 1:
-            yOk = True
-        outcome = xOk and yOk
-        print("is within bounds? " + str(outcome))
-        return (xOk and yOk)
     # EOC 
 
 def print_grid(grid):
@@ -214,4 +205,5 @@ cells = singleCell()
 genn = mazeGen(cells)
 
 genn.depth_first_search_maze_gen()
-print_grid(genn.grid)
+
+
