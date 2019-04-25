@@ -1,6 +1,7 @@
 import enum
 import random
-
+import time
+import os
 
 #  enum for sides, used for self.walls
 class sides(enum.Enum):
@@ -37,6 +38,10 @@ class singleCell:
 
 
 class mazeGen:
+    def __init__(self, cellObj, size):
+        self.mazeSize = size
+        self.grid = [[cellObj for x in range(self.mazeSize)] for y in range(self.mazeSize)]  # n by m matrix
+
     def __init__(self, cellObj):
         self.mazeSize = 3
         self.grid = [ [cellObj for x in range(self.mazeSize)] for y in range(self.mazeSize) ] # n by m matrix currently 5x5
@@ -52,6 +57,7 @@ class mazeGen:
         start_cell.set_visited_status(True)
         self.grid[0][0] = start_cell
         dfs_stack.append(self.grid[0][0])       # put first cell in stack
+        print_grid(self.grid)
         while self.visitedCount != (self.mazeSize * self.mazeSize) - 1:  # Loop until all cells are visited
             #  if all adjacent nodes are visited, backtrack by popping
             if self.all_adjacent_visited(self.grid[i][j]):
@@ -69,8 +75,7 @@ class mazeGen:
             j = next_cell.y
             self.grid[i][j] = next_cell
             dfs_stack.append(next_cell)  # Add the next cell to the stack
-            # print_grid(genn.grid)
-            # print("-----------------------")
+            print_grid(self.grid)
 
     def get_rand_node(self, cell):
         self.visitedCount += 1
@@ -86,24 +91,35 @@ class mazeGen:
 
         next_x = cell.x + 0
         next_y = cell.y + 0
-        if sideList[direction] == sides.top and cell.x != 0:  # top
-            next_x = cell.x - 1
-            next_y = cell.y + 0
-            # print ("TOP: (" + str(next_x) + "," + str(next_y) + ")")
-        if sideList[direction] == sides.bottom and cell.x != (self.mazeSize - 1):  # bottom
-            next_x = cell.x + 1
-            next_y = cell.y + 0
-            # print ("BOT:(" + str(next_x) + "," + str(next_y) + ")")
-        if sideList[direction] == sides.right and cell.y != (self.mazeSize - 1):  # right
-            next_x = cell.x + 0
-            next_y = cell.y + 1
-            # print ("RIGHT (" + str(next_x) + "," + str(next_y) + ")")
-        if sideList[direction] == sides.left and cell.y != 0:  # left
-            next_x = cell.x + 0
-            next_y = cell.y - 1
-            # print ("LEFT: (" + str(next_x) + "," + str(next_y) + ")")
+
         temp_cell = singleCell()
         temp_cell.set_visited_status(True)
+
+        if sideList[direction] == sides.top:  # top
+            next_x = cell.x - 1
+            next_y = cell.y + 0
+            self.grid[cell.x][cell.y].walls[sides.top.value] = False    # Make the current cells top wall false
+            temp_cell.walls[sides.bottom.value] = False                 # make the next cells bottom wall false
+            # print ("TOP: (" + str(next_x) + "," + str(next_y) + ")")
+        if sideList[direction] == sides.bottom:  # bottom
+            next_x = cell.x + 1
+            next_y = cell.y + 0
+            self.grid[cell.x][cell.y].walls[sides.bottom.value] = False # Make the current cells bottom wall false
+            temp_cell.walls[sides.top.value] = False                    # Make the next cells top fall false
+            # print ("BOT:(" + str(next_x) + "," + str(next_y) + ")")
+        if sideList[direction] == sides.right:  # right
+            next_x = cell.x + 0
+            next_y = cell.y + 1
+            self.grid[cell.x][cell.y].walls[sides.right.value] = False  # Make the current cells right wall false
+            temp_cell.walls[sides.left.value] = False                   # Make the next cells left wall false
+            # print ("RIGHT (" + str(next_x) + "," + str(next_y) + ")")
+        if sideList[direction] == sides.left:  # left
+            next_x = cell.x + 0
+            next_y = cell.y - 1
+            self.grid[cell.x][cell.y].walls[sides.left.value] = False
+            temp_cell.walls[sides.right.value] = False
+            # print ("LEFT: (" + str(next_x) + "," + str(next_y) + ")")
+
         temp_cell.set_node_coord(next_x, next_y)
 
 
@@ -195,11 +211,19 @@ def print_node_walls(mazee):
 
 
 
+
+def print_walls(grid):
+    for row in grid:
+        for e in row:
+            print("----------------")
+            print("Top = ", e.walls[0])
+            print("Bottom = ", e.walls[1])
+            print("Right = ", e.walls[2])
+            print("Left = ", e.walls[3])
+
 cells = singleCell()
 genn = mazeGen(cells)
 
 genn.depth_first_search_maze_gen()
 
 print_node_walls(genn)
-
-

@@ -9,7 +9,7 @@ class Unit(Sprite):
         self.window = window
         self.speed = 1
         self.p_width = 20
-        self.rect = pygame.Rect(0, 20, self.p_width, self.p_width)
+        self.rect = pygame.Rect(20, 20, self.p_width, self.p_width)
 
         # Hitboxes for checking cardinal directions
         self.left_hitbox = LeftHitbox(self.rect.x - 1, self.rect.y, 1, self.p_width)
