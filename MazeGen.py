@@ -10,8 +10,6 @@ class sides(enum.Enum):
     right = 2
     left = 3
 
-opp_sides = [1, 0, 3, 2]
-
 class singleCell:
     def __init__(self):
         self.beenVisited = False
@@ -40,12 +38,7 @@ class singleCell:
 class mazeGen:
     def __init__(self, cellObj, size):
         self.mazeSize = size
-        self.grid = [[cellObj for x in range(self.mazeSize)] for y in range(self.mazeSize)]  # n by m matrix
-
-    def __init__(self, cellObj):
-        self.mazeSize = 3
         self.grid = [ [cellObj for x in range(self.mazeSize)] for y in range(self.mazeSize) ] # n by m matrix currently 5x5
-        self.cell_queue = 0
         self.visitedCount = 0
 
     def depth_first_search_maze_gen(self):
@@ -57,25 +50,18 @@ class mazeGen:
         start_cell.set_visited_status(True)
         self.grid[0][0] = start_cell
         dfs_stack.append(self.grid[0][0])       # put first cell in stack
-        print_grid(self.grid)
         while self.visitedCount != (self.mazeSize * self.mazeSize) - 1:  # Loop until all cells are visited
             #  if all adjacent nodes are visited, backtrack by popping
             if self.all_adjacent_visited(self.grid[i][j]):
                 dfs_stack.pop()
                 next_cell = dfs_stack.pop()
             else:
-                neighbor_cell, direction = self.get_rand_node(self.grid[i][j])  # get next rand cell, given current cell
-                self.grid[i][j].walls[direction] = False
-                next_cell = neighbor_cell
-                next_cell.walls[opp_sides[direction]] = False
-                print ("~~~Current cell direction: " + str(direction))
-                print("~~~Next cell direction: " + str(opp_sides[direction]))
+                next_cell = self.get_rand_node(self.grid[i][j])
 
             i = next_cell.x
             j = next_cell.y
             self.grid[i][j] = next_cell
             dfs_stack.append(next_cell)  # Add the next cell to the stack
-            print_grid(self.grid)
 
     def get_rand_node(self, cell):
         self.visitedCount += 1
@@ -87,7 +73,6 @@ class mazeGen:
             # print("Is " + sideList[direction].name + " valid? " + str(cell_is_valid))
             if cell_is_valid:
                 break
-
 
         next_x = cell.x + 0
         next_y = cell.y + 0
@@ -121,9 +106,7 @@ class mazeGen:
             # print ("LEFT: (" + str(next_x) + "," + str(next_y) + ")")
 
         temp_cell.set_node_coord(next_x, next_y)
-
-
-        return temp_cell, direction
+        return temp_cell
 
     def is_valid(self, direction, node):
         node_x = node.x
@@ -183,34 +166,6 @@ def print_grid(grid):
 
         print('\n')
 
-def print_node_walls(mazee):
-
-    print(" " + "_" * (6))
-    for row in mazee.grid:
-        print("|", end="")
-        for col in row:
-            if col.walls[sides.bottom.value] == True:
-                print("_", end="")
-            if col.walls[sides.bottom.value] == False:
-                print(" ", end="")
-            if col.walls[sides.right.value] == True:
-                print("|", end="")
-            if col.walls[sides.right.value] == False:
-                print(" ", end="")
-            else:
-                print(" ", end="")
-            #print("x|", end="")
-        print("")
-    print("******")
-    for row in mazee.grid:
-        print("~~~~~")
-        for col in row:
-            print(col.walls)
-        print("~~~~~")
-            
-
-
-
 
 def print_walls(grid):
     for row in grid:
@@ -220,10 +175,3 @@ def print_walls(grid):
             print("Bottom = ", e.walls[1])
             print("Right = ", e.walls[2])
             print("Left = ", e.walls[3])
-
-cells = singleCell()
-genn = mazeGen(cells)
-
-genn.depth_first_search_maze_gen()
-
-print_node_walls(genn)
