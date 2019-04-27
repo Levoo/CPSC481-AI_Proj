@@ -4,12 +4,12 @@ import random
 
 
 class Unit(Sprite):
-    def __init__(self, window):
+    def __init__(self, window, width):
         super(Unit, self).__init__()
         self.window = window
         self.speed = 1
-        self.p_width = 20
-        self.rect = pygame.Rect(20, 20, self.p_width, self.p_width)
+        self.p_width = width
+        self.rect = pygame.Rect(self.p_width, self.p_width, self.p_width, self.p_width)
 
         # Hitboxes for checking cardinal directions
         self.left_hitbox = LeftHitbox(self.rect.x - 1, self.rect.y, 1, self.p_width)

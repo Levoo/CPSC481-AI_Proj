@@ -11,7 +11,7 @@ import random
 
 pygame.init()
 windowWidth = 1205 # og 305
-windowHeight = 650 # og 720
+windowHeight = 850 # og 720
 
 window = pygame.display.set_mode((windowWidth, windowHeight))  # set window size
 
@@ -19,11 +19,11 @@ window = pygame.display.set_mode((windowWidth, windowHeight))  # set window size
 clock = pygame.time.Clock()
 start_button = Button(window, "START", 500, 250)
 
-main = Unit(window)
-col = (55, 140, 130)
+mazeWidth = 16
+main = Unit(window, mazeWidth)
+col = (105, 180, 190)
 
-
-gridsize = 15
+gridsize = 20
 cells = singleCell()
 genn = mazeGen(cells, gridsize)
 genn.depth_first_search_maze_gen()
@@ -36,26 +36,26 @@ for i in range(gridsize):
         # For every cell, if wall is true then draw wall
         # Make Left Walls
         if genn.grid[j][i].walls[sides.left.value] == True:
-            tempLeft = Wall(window, (i * 40), (j * 40), 20, 60, col)
+            tempLeft = Wall(window, (i * mazeWidth*2), (j * mazeWidth*2), mazeWidth, mazeWidth*3, col)
             grid_arr.append(tempLeft)
 
         # Make Right Walls
         if genn.grid[j][i].walls[sides.right.value] == True:
-            tempRight = Wall(window, ((i * 40) + 40), (j * 40), 20, 60, col)
+            tempRight = Wall(window, ((i * mazeWidth*2) + mazeWidth*2), (j * mazeWidth*2), mazeWidth, mazeWidth*3, col)
             grid_arr.append(tempRight)
 
         # Make Top Walls
         if genn.grid[j][i].walls[sides.top.value] == True:
-            tempTop = Wall(window, (i * 40), (j * 40), 60, 20, col)
+            tempTop = Wall(window, (i * mazeWidth*2), (j * mazeWidth*2), mazeWidth*3, mazeWidth, col)
             grid_arr.append(tempTop)
 
         # Make Bottom Walls
         if genn.grid[j][i].walls[sides.bottom.value] == True:
-            tempBottom = Wall(window, (i * 40), ((j * 40) + 40), 60, 20, col)
+            tempBottom = Wall(window, (i * mazeWidth*2), ((j * mazeWidth*2) + mazeWidth*2), mazeWidth*3, mazeWidth, col)
             grid_arr.append(tempBottom)
 
         if genn.grid[j][i].isNode == True:
-            box = ((i * 40) + 25, (j * 40) + 25, 10, 10)
+            box = ((i * (mazeWidth*2)) + (mazeWidth + mazeWidth/4), (j * (mazeWidth*2)) + (mazeWidth + mazeWidth/4), mazeWidth/2, mazeWidth/2)
             node_arr.append(box)
 
 
@@ -78,6 +78,6 @@ while True:
         block.draw()
 
     for n in node_arr:
-        drawNode(window, (0, 130, 240), n)
+        drawNode(window, (255, 255, 255), n)
 
     pygame.display.update()
