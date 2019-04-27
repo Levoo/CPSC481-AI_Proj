@@ -6,6 +6,7 @@ from Button import Button
 from Unit import Unit
 import Functions as f
 from MazeGen import *
+from NodeGen import genNode
 import random
 
 pygame.init()
@@ -26,6 +27,7 @@ gridsize = 15
 cells = singleCell()
 genn = mazeGen(cells, gridsize)
 genn.depth_first_search_maze_gen()
+genNode(genn.grid, gridsize)
 grid_arr = []       # array of Wall objects
 node_arr = []
 
@@ -52,20 +54,7 @@ for i in range(gridsize):
             tempBottom = Wall(window, (i * 40), ((j * 40) + 40), 60, 20, col)
             grid_arr.append(tempBottom)
 
-        # top = 0, bottom = 1, right = 2, left = 3
-        isNode = True
-
-        # Check if path can only go up or down
-        if genn.grid[j][i].walls[1] == False and genn.grid[j][i].walls[0] == False:
-            if genn.grid[j][i].walls[2] == True and genn.grid[j][i].walls[3] == True:
-                isNode = False
-
-        # Check if path can only go left or right
-        if genn.grid[j][i].walls[1] == True and genn.grid[j][i].walls[0] == True:
-                if genn.grid[j][i].walls[2] == False and genn.grid[j][i].walls[3] == False:
-                    isNode = False
-
-        if isNode == True:
+        if genn.grid[j][i].isNode == True:
             box = ((i * 40) + 25, (j * 40) + 25, 10, 10)
             node_arr.append(box)
 
@@ -92,4 +81,3 @@ while True:
         drawNode(window, (0, 130, 240), n)
 
     pygame.display.update()
-

@@ -3,6 +3,7 @@ import random
 import time
 import os
 
+
 #  enum for sides, used for self.walls
 class sides(enum.Enum):
     top = 0
@@ -10,12 +11,14 @@ class sides(enum.Enum):
     right = 2
     left = 3
 
+
 class singleCell:
     def __init__(self):
         self.beenVisited = False
-        self.walls = [True, True, True, True] # list of booleans, see enum class for index meaning
+        self.walls = [True, True, True, True]  # list of booleans, see enum class for index meaning
         self.x = None
         self.y = None
+        self.isNode = True
 
     # prints the node in the 2d array and if it has been visited
     def print_node(self):
@@ -23,14 +26,14 @@ class singleCell:
         print("Visited: " + str(self.get_visited_status()))
         #  for (wallPresent, side) in zip(self.walls, sides):
         #  print( str(side.name) + " side: " + str(wallPresent))
-    
+
     def set_visited_status(self, visited):
         self.beenVisited = visited
-    
+
     def set_node_coord(self, x, y):
         self.x = x
         self.y = y
-    
+
     def get_visited_status(self):
         return self.beenVisited
 
@@ -38,7 +41,8 @@ class singleCell:
 class mazeGen:
     def __init__(self, cellObj, size):
         self.mazeSize = size
-        self.grid = [ [cellObj for x in range(self.mazeSize)] for y in range(self.mazeSize) ] # n by m matrix currently 5x5
+        self.grid = [[cellObj for x in range(self.mazeSize)] for y in
+                     range(self.mazeSize)]  # n by m matrix currently 5x5
         self.visitedCount = 0
 
     def depth_first_search_maze_gen(self):
@@ -49,7 +53,7 @@ class mazeGen:
         start_cell.set_node_coord(0, 0)
         start_cell.set_visited_status(True)
         self.grid[0][0] = start_cell
-        dfs_stack.append(self.grid[0][0])       # put first cell in stack
+        dfs_stack.append(self.grid[0][0])  # put first cell in stack
         while self.visitedCount != (self.mazeSize * self.mazeSize) - 1:  # Loop until all cells are visited
             #  if all adjacent nodes are visited, backtrack by popping
             if self.all_adjacent_visited(self.grid[i][j]):
@@ -67,7 +71,7 @@ class mazeGen:
         self.visitedCount += 1
         direction = None
         sideList = [sides.top, sides.bottom, sides.left, sides.right]  # list of potential position to visit
-        while len(sideList) > 0:    # Loop until a cell is found that is not out of bounds and not visited yet
+        while len(sideList) > 0:  # Loop until a cell is found that is not out of bounds and not visited yet
             direction = random.randint(0, len(sideList) - 1)
             cell_is_valid = self.is_valid(sideList[direction], cell)
             # print("Is " + sideList[direction].name + " valid? " + str(cell_is_valid))
@@ -83,20 +87,20 @@ class mazeGen:
         if sideList[direction] == sides.top:  # top
             next_x = cell.x - 1
             next_y = cell.y + 0
-            self.grid[cell.x][cell.y].walls[sides.top.value] = False    # Make the current cells top wall false
-            temp_cell.walls[sides.bottom.value] = False                 # make the next cells bottom wall false
+            self.grid[cell.x][cell.y].walls[sides.top.value] = False  # Make the current cells top wall false
+            temp_cell.walls[sides.bottom.value] = False  # make the next cells bottom wall false
             # print ("TOP: (" + str(next_x) + "," + str(next_y) + ")")
         if sideList[direction] == sides.bottom:  # bottom
             next_x = cell.x + 1
             next_y = cell.y + 0
-            self.grid[cell.x][cell.y].walls[sides.bottom.value] = False # Make the current cells bottom wall false
-            temp_cell.walls[sides.top.value] = False                    # Make the next cells top fall false
+            self.grid[cell.x][cell.y].walls[sides.bottom.value] = False  # Make the current cells bottom wall false
+            temp_cell.walls[sides.top.value] = False  # Make the next cells top fall false
             # print ("BOT:(" + str(next_x) + "," + str(next_y) + ")")
         if sideList[direction] == sides.right:  # right
             next_x = cell.x + 0
             next_y = cell.y + 1
             self.grid[cell.x][cell.y].walls[sides.right.value] = False  # Make the current cells right wall false
-            temp_cell.walls[sides.left.value] = False                   # Make the next cells left wall false
+            temp_cell.walls[sides.left.value] = False  # Make the next cells left wall false
             # print ("RIGHT (" + str(next_x) + "," + str(next_y) + ")")
         if sideList[direction] == sides.left:  # left
             next_x = cell.x + 0
@@ -136,7 +140,6 @@ class mazeGen:
                 return False
         return True
 
-
     def all_adjacent_visited(self, node):
         x = node.x
         y = node.y
@@ -154,7 +157,8 @@ class mazeGen:
                 return False
         return True
 
-    # EOC 
+    # EOC
+
 
 def print_grid(grid):
     for row in grid:
