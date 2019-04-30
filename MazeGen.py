@@ -16,6 +16,7 @@ class singleCell:
     def __init__(self):
         self.beenVisited = False
         self.walls = [True, True, True, True]  # list of booleans, see enum class for index meaning
+        self.neighbors = {'Top': None, 'Bottom': None, 'Left': None, 'Right': None}
         self.x = None
         self.y = None
         self.isNode = True
@@ -23,7 +24,7 @@ class singleCell:
     # prints the node in the 2d array and if it has been visited
     def print_node(self):
         print("Node: (" + str(self.x) + ", " + str(self.y) + ")")
-        print("Visited: " + str(self.get_visited_status()))
+        #  print("Visited: " + str(self.get_visited_status()))
         #  for (wallPresent, side) in zip(self.walls, sides):
         #  print( str(side.name) + " side: " + str(wallPresent))
 

@@ -6,7 +6,7 @@ from Button import Button
 from Unit import Unit
 import Functions as f
 from MazeGen import *
-from NodeGen import genNode
+from NodeGen import *
 import random
 
 pygame.init()
@@ -23,11 +23,13 @@ mazeWidth = 16
 main = Unit(window, mazeWidth)
 col = (105, 180, 190)
 
-gridsize = 20
+gridsize = 10
 cells = singleCell()
 genn = mazeGen(cells, gridsize)
 genn.depth_first_search_maze_gen()
-genNode(genn.grid, gridsize)
+genNode(genn.grid, gridsize)      # Determine which cells are nodes
+genNeighbor(genn.grid, gridsize)  # Get the neighbors for each node in grid
+
 grid_arr = []       # array of Wall objects
 node_arr = []
 
