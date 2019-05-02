@@ -50,7 +50,7 @@ class Unit(Sprite):
 
         # Next move if node is hit
         if self.rect.y == self.next_node.x * self.p_width * 2 + self.p_width and \
-                self.rect.x == self.next_node.y * self.p_width * 2ing  + self.p_width:
+                self.rect.x == self.next_node.y * self.p_width * 2 + self.p_width:
             self.visited_nodes.append(self.next_node)
             self.current_node = self.next_node
             if self.current_node.beenVisited[self.id_no][0] is False:
