@@ -5,12 +5,13 @@ import random
 
 
 class Unit(Sprite):
-    def __init__(self, window, width, node, no):
+    def __init__(self, window, width, node, no, color):
         super(Unit, self).__init__()
         self.window = window
         self.speed = 1
         self.p_width = width
         self.id_no = no
+        self.color = color
 
         # Visited node = genes, visited_nodes = chromosome
         self.direction = None
@@ -36,7 +37,7 @@ class Unit(Sprite):
                 print(self.next_node.x * self.p_width, " ", self.next_node.y * self.p_width)
 
     def draw(self):
-        pygame.draw.rect(self.window, (240, 230, 140), self.rect)  # Draw player every frame
+        pygame.draw.rect(self.window, self.color, self.rect)  # Draw player every frame
 
     def ai(self):
         if self.direction == "up":
@@ -80,10 +81,8 @@ class Unit(Sprite):
                     else:
                         last_resort = (key, value)
 
-            if len(viable_moves) > 1:
-                select = random.randrange(len(viable_moves) - 1)
-            elif len(viable_moves) is 1:
-                select = 0
+            if len(viable_moves) > 0:
+                select = random.randint(0, len(viable_moves) - 1)
             else:
                 viable_moves.append(last_resort)
                 select = 0
@@ -92,6 +91,5 @@ class Unit(Sprite):
             self.direction = viable_moves[select][0]
             self.current_node.check_out[self.id_no][self.direction] = True
 
-            for key, value in self.current_node.neighbors.items():
-                print(self.direction, " ", key, " ", value, " ", self.current_node.check_out[self.id_no][key])
+            print(self.id_no, " ", self.direction, " ", select, " ", len(viable_moves))
 

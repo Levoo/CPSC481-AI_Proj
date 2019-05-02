@@ -17,18 +17,22 @@ for x in range(0, 1305, 50):
         #print("placing line on x: " + str(x))
 
 '''
-#enum for sides, used for self.walls 
+# enum for sides, used for self.walls
+
+
 class sides(enum.Enum):
     top = 0
     bottom = 1
     right = 2
     left = 3
 
+
 class singleCell:
     def __init__(self):
-        self.beenVisited = False
+        self.beenVisited = None
+        self.check_out = None
         self.walls = [True, True, True, True]  # list of booleans, see enum class for index meaning
-        self.neighbors = {'Top': None, 'Bottom': None, 'Left': None, 'Right': None}
+        self.neighbors = {"up": None, "down": None, "left": None, "right": None}
         self.x = None
         self.y = None
         self.isNode = True
@@ -49,6 +53,7 @@ class singleCell:
 
     def get_visited_status(self):
         return self.beenVisited
+
 
 class mazeGen:
     def __init__(self, cellObj, size):
