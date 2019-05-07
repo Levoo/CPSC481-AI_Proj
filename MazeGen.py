@@ -36,6 +36,7 @@ class singleCell:
         self.x = None
         self.y = None
         self.isNode = True
+        self.isMazeEndNode = False
 
     # prints the node in the 2d array and if it has been visited
     def print_node(self):
@@ -95,6 +96,8 @@ class mazeGen:
             j = next_cell.y
             self.grid[i][j] = next_cell
             dfs_stack.append(next_cell)  # Add the next cell to the stack
+        # once mazer is generated select end node 
+        self.set_maze_end()
 
     def get_rand_node(self, cell):
         self.visitedCount += 1
@@ -185,7 +188,16 @@ class mazeGen:
             if not self.grid[x][y + 1].get_visited_status():  # check right
                 return False
         return True
+    
+    def set_maze_end(self):
+        for col in range(self.mazeSize):
+            rand_y = random.randint(0, self.mazeSize - 1)
+            if self.grid[self.mazeSize - 1][rand_y].walls[0] == False \
+                or self.grid[self.mazeSize - 1][rand_y].walls[1] == False \
+                or self.grid[self.mazeSize - 1][rand_y].walls[2] == False \
+                or self.grid[self.mazeSize - 1][rand_y].walls[3] == False:
 
+                self.grid[self.mazeSize - 1][rand_y].isMazeEndNode = True
     # EOC
 
 

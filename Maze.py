@@ -52,6 +52,11 @@ for i in range(gridsize):
     for j in range(gridsize):
         # For every cell, if wall is true then draw wall
         # Make Left Walls
+
+        if genn.grid[j][i].isMazeEndNode:
+            tempEndNode = Wall(window, (i * mazeWidth + mazeWidth), (j * mazeWidth + mazeWidth), mazeWidth, mazeWidth, (144, 51, 115))
+            grid_arr.append(tempEndNode)
+
         if genn.grid[j][i].walls[sides.left.value] is True:
             tempLeft = Wall(window, (i * mazeWidth*2), (j * mazeWidth*2), mazeWidth, mazeWidth*3, col)
             grid_arr.append(tempLeft)
