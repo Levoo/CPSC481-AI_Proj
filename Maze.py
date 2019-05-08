@@ -27,6 +27,8 @@ cells = singleCell()
 genn = mazeGen(cells, gridsize)
 genn.depth_first_search_maze_gen()
 nodes = []
+parents = []
+genes = []
 pop_no = 10
 genNode(genn.grid, gridsize, nodes, pop_no)      # Determine which cells are nodes
 genNeighbor(genn.grid, gridsize)  # Get the neighbors for each node in grid
@@ -43,7 +45,7 @@ for x in range(pop_no):
         colors.append((0, 255 * (1 - (x / pop_no / 0.8)), 255))
     elif x / pop_no <= 1:
         colors.append((255 * (x / pop_no), 0, 255))
-candidates = [Unit(window, mazeWidth, nodes[0], x, colors[x]) for x in range(pop_no)]
+candidates = [Unit(window, mazeWidth, nodes[0], x, colors[x], []) for x in range(pop_no)]
 
 grid_arr = []       # array of Wall objects
 node_arr = []
@@ -102,3 +104,29 @@ while True:
         drawNode(window, (255, 255, 255), n)
 
     pygame.display.update()
+
+'''
+genes.clear()
+z = 0
+while x < len(parents[0].visited_nodes) and x < len(parents[1].visited_nodes) and parents[0].visited_nodes[z] == parents[1].visited_nodes[z]:
+    genes.append(parents[0].moves)
+    z += 1
+candidates.clear()
+parents[0].reset(nodes[0])
+parents[0].id = 0
+parents[0].color = colors[0]
+candidates.append(parents[0])
+parents[1].reset(nodes[0])
+parents[1].id = 1
+parents[1].color = colors[1]
+candidates.append(parent[1])
+parents.clear()
+for x in range(2, pop_no - 1):
+    candidates.append(Unit(window, mazeWidth, nodes[0], x, colors[x], genes))
+    if len(genes) > 1:
+        genes.pop()
+candidates.append(Unit(window, mazeWidth, nodes[0], x, colors[x]))
+for node in nodes:
+    node.beenVisited = [(False, None) for x in range(pop_no)]
+    node.check_out = [{"up": False, "down": False, "left": False, "right": False} for x in range(pop_no)]
+'''

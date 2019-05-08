@@ -5,7 +5,7 @@ import random
 
 
 class Unit(Sprite):
-    def __init__(self, window, width, node, no, color):
+    def __init__(self, window, width, node, no, color, visited_nodes):
         super(Unit, self).__init__()
         self.window = window
         self.speed = 1
@@ -17,7 +17,7 @@ class Unit(Sprite):
         self.direction = None
         self.current_node = node
         self.next_node = None
-        self.visited_nodes = []
+        self.visited_nodes = visited_nodes
         self.move_count = 0
 
         self.rect = pygame.Rect(self.current_node.y * self.p_width + self.p_width,
@@ -33,8 +33,6 @@ class Unit(Sprite):
                 self.current_node.check_out[self.id_no][key] = True
                 self.next_node = value
                 self.direction = key
-                print(self.current_node.x * self.p_width, " ", self.current_node.y * self.p_width)
-                print(self.next_node.x * self.p_width, " ", self.next_node.y * self.p_width)
 
     def draw(self):
         pygame.draw.rect(self.window, self.color, self.rect)  # Draw player every frame
@@ -52,44 +50,59 @@ class Unit(Sprite):
         # Next move if node is hit
         if self.rect.y == self.next_node.x * self.p_width * 2 + self.p_width and \
                 self.rect.x == self.next_node.y * self.p_width * 2 + self.p_width:
-            self.visited_nodes.append(self.next_node)
-            self.current_node = self.next_node
-            if self.current_node.beenVisited[self.id_no][0] is False:
-                if self.direction is "left":
-                    self.current_node.beenVisited[self.id_no] = (True, "right")
-                elif self.direction is "right":
-                    self.current_node.beenVisited[self.id_no] = (True, "left")
-                elif self.direction is "up":
-                    self.current_node.beenVisited[self.id_no] = (True, "down")
-                elif self.direction is "down":
-                    self.current_node.beenVisited[self.id_no] = (True, "up")
-            self.move_count += 1
-            self.weight += math.sqrt(math.pow(self.rect.y - self.last_position[0], 2) +
-                                     math.pow(self.rect.x - self.last_position[1], 2))
-            self.last_position = (self.rect.x, self.rect.y)
-            viable_moves = []
-            last_resort = None
+            if self.move_count >= len(self.visited_nodes):
+                self.visited_nodes.append((self.next_node, self.direction))
+                self.current_node = self.next_node
+                if self.current_node.beenVisited[self.id_no][0] is False:
+                    if self.direction is "left":
+                        self.current_node.beenVisited[self.id_no] = (True, "right")
+                    elif self.direction is "right":
+                        self.current_node.beenVisited[self.id_no] = (True, "left")
+                    elif self.direction is "up":
+                        self.current_node.beenVisited[self.id_no] = (True, "down")
+                    elif self.direction is "down":
+                        self.current_node.beenVisited[self.id_no] = (True, "up")
+                self.move_count += 1
+                self.weight += math.sqrt(math.pow(self.rect.y - self.last_position[0], 2) +
+                                         math.pow(self.rect.x - self.last_position[1], 2))
+                self.last_position = (self.rect.x, self.rect.y)
+                viable_moves = []
+                last_resort = None
 
-            for key, value in self.current_node.neighbors.items():
-                if value is not None and self.current_node.check_out[self.id_no][key] is False:
-                    if ((key is "up" and self.direction is not "down") or
-                       (key is "down" and self.direction is not "up") or
-                       (key is "left" and self.direction is not "right") or
-                       (key is "right" and self.direction is not "left")) and \
-                       key is not self.current_node.beenVisited[self.id_no][1]:
-                        viable_moves.append((key, value))
-                    else:
-                        last_resort = (key, value)
+                for key, value in self.current_node.neighbors.items():
+                    if value is not None and self.current_node.check_out[self.id_no][key] is False:
+                        if ((key is "up" and self.direction is not "down") or
+                            (key is "down" and self.direction is not "up") or
+                            (key is "left" and self.direction is not "right") or
+                            (key is "right" and self.direction is not "left")) and \
+                                key is not self.current_node.beenVisited[self.id_no][1]:
+                            viable_moves.append((key, value))
+                        else:
+                            last_resort = (key, value)
 
-            if len(viable_moves) > 0:
-                select = random.randint(0, len(viable_moves) - 1)
+                if len(viable_moves) > 0:
+                    select = random.randint(0, len(viable_moves) - 1)
+                else:
+                    viable_moves.append(last_resort)
+                    select = 0
+
+                self.next_node = viable_moves[select][1]
+                self.direction = viable_moves[select][0]
+                self.current_node.check_out[self.id_no][self.direction] = True
             else:
-                viable_moves.append(last_resort)
-                select = 0
+                self.next_node = self.visited_nodes[0][self.move_count]
+                self.direction = self.visited_nodes[1][self.move_count]
+                self.move_count += 1
 
-            self.next_node = viable_moves[select][1]
-            self.direction = viable_moves[select][0]
-            self.current_node.check_out[self.id_no][self.direction] = True
+    def reset(self, node):
+        self.direction = None
+        self.current_node = node
+        self.next_node = None
+        self.move_count = 0
+        self.rect.topleft = (self.current_node.y * self.p_width + self.p_width, self.current_node.x * self.p_width + self.p_width)
 
-            print(self.id_no, " ", self.direction, " ", select, " ", len(viable_moves))
-
+        for key, value in self.current_node.neighbors.items():
+            if value is not None:
+                self.current_node.check_out[self.id_no][key] = True
+                self.next_node = value
+                self.direction = key
