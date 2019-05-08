@@ -97,7 +97,6 @@ class mazeGen:
             self.grid[i][j] = next_cell
             dfs_stack.append(next_cell)  # Add the next cell to the stack
         # once mazer is generated select end node 
-        self.set_maze_end()
 
     def get_rand_node(self, cell):
         self.visitedCount += 1
@@ -189,15 +188,33 @@ class mazeGen:
                 return False
         return True
     
-    def set_maze_end(self):
-        for col in range(self.mazeSize):
-            rand_y = random.randint(0, self.mazeSize - 1)
-            if self.grid[self.mazeSize - 1][rand_y].walls[0] == False \
-                or self.grid[self.mazeSize - 1][rand_y].walls[1] == False \
-                or self.grid[self.mazeSize - 1][rand_y].walls[2] == False \
-                or self.grid[self.mazeSize - 1][rand_y].walls[3] == False:
+    def set_maze_end(self, coord_list):
+        # have this take the x, y and let it tag that bool
+        # loop over final row of nodes and see if we have a dead end 
+        deadend = False
+        check_count = 0
+        max_count = 3 * (len(coord_list) - 1) # macl sure its not an infinat loop
+        while not deadend or check_count <= max_count: #for pair in coord_list:
+            randChoice = random.choice(list(coord_list.keys()))
+            x = coord_list[randChoice][0]
+            y = coord_list[randChoice][1]
+            false_count =  self.grid[x][y].walls.count(False)
 
-                self.grid[self.mazeSize - 1][rand_y].isMazeEndNode = True
+            if false_count == 1:
+                self.grid[x][y].isMazeEndNode = True
+                deadend = True
+                return  randChoice
+            check_count += 1
+        if not deadend: # just pick a random one 
+            # pick random from coord list, assign it the flag
+            randChoice = random.choice(list(coord_list.keys()))
+            x = coord_list[randChoice][0]
+            y = coord_list[randChoice][1]
+            self.grid[x][y].isMazeEndNode = True
+            return randChoice
+
+
+
     # EOC
 
 

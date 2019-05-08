@@ -47,16 +47,13 @@ candidates = [Unit(window, mazeWidth, nodes[0], x, colors[x]) for x in range(pop
 
 grid_arr = []       # array of Wall objects
 node_arr = []
+end_node_options = {}
+end_node_index = None
 
 for i in range(gridsize):
     for j in range(gridsize):
         # For every cell, if wall is true then draw wall
         # Make Left Walls
-
-        if genn.grid[j][i].isMazeEndNode:
-            tempEndNode = Wall(window, (i * mazeWidth + mazeWidth), (j * mazeWidth + mazeWidth), mazeWidth, mazeWidth, (144, 51, 115))
-            grid_arr.append(tempEndNode)
-
         if genn.grid[j][i].walls[sides.left.value] is True:
             tempLeft = Wall(window, (i * mazeWidth*2), (j * mazeWidth*2), mazeWidth, mazeWidth*3, col)
             grid_arr.append(tempLeft)
@@ -78,9 +75,12 @@ for i in range(gridsize):
 
         if genn.grid[j][i].isNode is True:
             box = ((i * (mazeWidth*2)) + (mazeWidth + mazeWidth/4), (j * (mazeWidth*2)) + (mazeWidth + mazeWidth/4), mazeWidth/2, mazeWidth/2)
+            if (j  == (gridsize - 3) or j  == (gridsize - 2) or j  == (gridsize - 1)):#\
+                #or (i  == (gridsize - 3) or i  == (gridsize - 2) or i  == (gridsize - 1)) :
+                end_node_options[len(node_arr)] = [j, i]
             node_arr.append(box)
 
-
+end_node_index = genn.set_maze_end(end_node_options)
 grid = Group()
 grid.add(grid_arr)
 
@@ -102,8 +102,14 @@ while True:
 
     for block in grid:
         block.draw()
-
+    
+    counter = 0
+    node_array_size = len(node_arr) - 1
     for n in node_arr:
-        drawNode(window, (255, 255, 255), n)
+        if end_node_index == counter:
+            drawNode(window, (144, 51, 115), n)
+        else:
+            drawNode(window, (255, 255, 255), n)
+        counter = counter + 1 
 
     pygame.display.update()
