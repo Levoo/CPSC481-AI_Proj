@@ -3,29 +3,12 @@ import random
 import time
 import os
 
-# WIP
-
-'''
-for later
-
-for x in range(0, 1305, 50):
-        wall.draw(pygame.Rect(x, 0, 5, 705))
-        #print("placing line on x: " + str(x))
-    # horizontal lines
-    for y in range(0, 720, 50):
-        wall.draw(pygame.Rect(0, y, 1305, 5))
-        #print("placing line on x: " + str(x))
-
-'''
 # enum for sides, used for self.walls
-
-
 class sides(enum.Enum):
     top = 0
     bottom = 1
     right = 2
     left = 3
-
 
 class singleCell:
     def __init__(self):
@@ -64,7 +47,8 @@ class mazeGen:
         self.visitedCount = 0
 
     '''
-    Implement psedo-code: WIP
+    source: https://www.algosome.com/articles/maze-generation-depth-first.html
+    Implement psedo-code: 
     Randomly select a node (or cell) N.
     Push the node N onto a queue Q.
     Mark the cell N as visited.
@@ -96,7 +80,6 @@ class mazeGen:
             j = next_cell.y
             self.grid[i][j] = next_cell
             dfs_stack.append(next_cell)  # Add the next cell to the stack
-        # once mazer is generated select end node 
 
     def get_rand_node(self, cell):
         self.visitedCount += 1
@@ -203,9 +186,6 @@ class mazeGen:
                 self.grid[x][y].isMazeEndNode = True
                 return randChoice
             check_count += 1
-
-
-
     # EOC
 
 
