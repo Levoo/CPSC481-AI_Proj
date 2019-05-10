@@ -157,8 +157,6 @@ def draw_stats():
                 rect = rect.move(36, 0)
                 pygame.draw.rect(window, parents[1].color, rect)
 
-
-print("Start")
 while True:
     clock.tick(120)  # FPS
 
@@ -205,7 +203,7 @@ while True:
 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT or quit_button.pressed:
-                        print("")
+                        print("Quiting Program")
                         sys.exit()
                 window.fill((51, 51, 51))  # draw the background
 
