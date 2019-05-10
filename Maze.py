@@ -291,7 +291,4 @@ while True:
         grid.add(grid_arr)
         candidates = [Unit(window, mazeWidth, nodes[0], x, colors[x], []) for x in range(pop_no)]
 
-    for n in node_arr:
-        drawNode(window, (255, 255, 255), n)
-
     pygame.display.update()
