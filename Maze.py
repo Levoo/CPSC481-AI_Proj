@@ -8,6 +8,7 @@ import Functions as f
 from MazeGen import *
 from NodeGen import *
 import random
+import sys
 
 pygame.init()
 windowWidth = 738 # og 305
@@ -157,7 +158,7 @@ def draw_stats():
                 pygame.draw.rect(window, parents[1].color, rect)
 
 
-
+print("Start")
 while True:
     clock.tick(120)  # FPS
 
@@ -202,6 +203,10 @@ while True:
             while len(parents) < pop_no:
                 clock.tick(120)  # FPS
 
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT or quit_button.pressed:
+                        print("")
+                        sys.exit()
                 window.fill((51, 51, 51))  # draw the background
 
                 for x in reversed(candidates):
@@ -223,8 +228,8 @@ while True:
                     counter = counter + 1
 
                 draw_stats()
-
                 pygame.display.update()
+                pygame.time.delay(5)
             pause = 0
             font = pygame.font.SysFont(None, 36)
             while pause < 360:
