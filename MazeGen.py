@@ -17,21 +17,26 @@ for x in range(0, 1305, 50):
         #print("placing line on x: " + str(x))
 
 '''
-#enum for sides, used for self.walls 
+# enum for sides, used for self.walls
+
+
 class sides(enum.Enum):
     top = 0
     bottom = 1
     right = 2
     left = 3
 
+
 class singleCell:
     def __init__(self):
-        self.beenVisited = False
+        self.beenVisited = None
+        self.check_out = None
         self.walls = [True, True, True, True]  # list of booleans, see enum class for index meaning
-        self.neighbors = {'Top': None, 'Bottom': None, 'Left': None, 'Right': None}
+        self.neighbors = {"up": None, "down": None, "left": None, "right": None}
         self.x = None
         self.y = None
         self.isNode = True
+        self.isMazeEndNode = False
 
     # prints the node in the 2d array and if it has been visited
     def print_node(self):
@@ -49,6 +54,7 @@ class singleCell:
 
     def get_visited_status(self):
         return self.beenVisited
+
 
 class mazeGen:
     def __init__(self, cellObj, size):
@@ -90,6 +96,7 @@ class mazeGen:
             j = next_cell.y
             self.grid[i][j] = next_cell
             dfs_stack.append(next_cell)  # Add the next cell to the stack
+        # once mazer is generated select end node 
 
     def get_rand_node(self, cell):
         self.visitedCount += 1
@@ -180,6 +187,24 @@ class mazeGen:
             if not self.grid[x][y + 1].get_visited_status():  # check right
                 return False
         return True
+    
+    def set_maze_end(self, coord_list):
+        # have this take the x, y and let it tag that bool
+        # loop over final row of nodes and see if we have a dead end 
+        deadend = False
+        check_count = 0
+        while not deadend: #for pair in coord_list:
+            randChoice = random.choice(list(coord_list.keys()))
+            x = coord_list[randChoice][0]
+            y = coord_list[randChoice][1]
+            false_count = self.grid[x][y].walls.count(False)
+
+            if false_count == 1:
+                self.grid[x][y].isMazeEndNode = True
+                return randChoice
+            check_count += 1
+
+
 
     # EOC
 

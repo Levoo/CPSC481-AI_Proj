@@ -2,13 +2,13 @@ import pygame
 
 
 class Button:
-    def __init__(self, screen, msg, x, y):
+    def __init__(self, screen, msg, x, y, width, height):
         self.screen = screen
         self.screen_rect = screen.get_rect()
         self.x = x
         self.y = y
 
-        self.width, self.height = 200, 50
+        self.width, self.height = width, height
         self.rect = pygame.Rect(0, 0, self.width, self.height)
         self.border_rect = pygame.Rect(0, 0, self.width + 4, self.height + 4)
         self.select_rect1 = pygame.Rect(0, 0, self.width, self.height)
